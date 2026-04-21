@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 font-sans p-6">
+    <div class="max-w-3xl mx-auto space-y-6">
+        <header class="text-center">
+            <h1 class="text-4xl font-extrabold text-blue-600 tracking-tight">AI Finance Tracker</h1>
+            <p>Enter an expense, and AI will automatically categorize it.</p>
+        </header>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <form id="expenseForm" class="flex gap-4 items-end">
+
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Desciption</label>
+                    <input type="text" id="description" placeholder="e.g., Starbucks coffee" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="w-32">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                    <input type="number" id="amount" placeholder="0.00" step="0.01" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+                    Add
+                </button>
+            </form>
+        </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="px-6 py-4 border-gray-100 bg-gray-50">
+                            <h2 class="text-lg font-bold text-gray-700">Recent Transactions</h2>
+                        </div>
+                        <ul id="expenseList" class="divide-y divide-gray-100"></ul>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-center items-center">
+                        <h2 class="text-lg font-bold text-gray-500 mb-2">Total spent</h2>
+                        <div class="text-5xl font-black text-red-500" id="totalAmount">₹0.00</div>
+                    </div>
+                </div>
+
+    </div>
+
+    <script>
+        const expenseForm = document.getElementById('expenseForm');
+        const expenseList = document.getElementById('expenseList');
+        const totalAmountEl = document.getElementById('totalAmount');
+        let total = 0;
+
+        expenseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            const response = await fetch('/api/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description, amount })
+            });
+
+            const newExpense = await response.json();
+
+            addExpenseToDOM(newExpense);
+            updateTotal(newExpense.amount);
+
+            expenseForm.reset();
+            document.getElementById('description').focus();
+        });
+
+        function addExpenseToDOM(expense) {
+            const li = document.createElement('li');
+            li.className = "px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors";
+
+            li.innerHTML = `
+                <div>
+                    <p class="font-semibold text-gray-800">${expense.description}</p>
+                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                        AI: ${expense.category}
+                    </span>
+                </div>
+                <div class="font-bold text-gray-700">
+                    ₹${expense.amount.toFixed(2)}
+                </div>
+            `;
+
+            expenseList.prepend(li);
+        }
+
+        function updateTotal(amount) {
+            total += parseFloat(amount);
+            totalAmountEl.textContent = `₹${total.toFixed(2)}`;
+        }
+</script>
+
+</body>
+</html>
