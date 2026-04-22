@@ -2,101 +2,299 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FinAI — Smart Expense Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-soft': 'pulse 0.4s cubic-bezier(0.4, 0, 0.6, 1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 font-sans p-6">
-    <div class="max-w-3xl mx-auto space-y-6">
-        <header class="text-center">
-            <h1 class="text-4xl font-extrabold text-blue-600 tracking-tight">AI Finance Tracker</h1>
-            <p>Enter an expense, and AI will automatically categorize it.</p>
-        </header>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <form id="expenseForm" class="flex gap-4 items-end">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen text-gray-800 font-sans antialiased p-4 md:p-8">
 
-                <div class="flex-1">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Desciption</label>
-                    <input type="text" id="description" placeholder="e.g., Starbucks coffee" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+    <div class="max-w-5xl mx-auto space-y-6 md:space-y-8">
+        
+        <div class="text-center space-y-3">
+            <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-1.5 shadow-sm border border-white/50">
+                <i class="fas fa-microchip text-blue-500 text-xs"></i>
+                <span class="text-xs font-semibold text-gray-600 tracking-wide">AI-POWERED CATEGORIZATION</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-slate-800 via-blue-700 to-indigo-600 bg-clip-text text-transparent">
+                FinAI Tracker
+            </h1>
+            <p class="text-gray-500 max-w-md mx-auto text-sm md:text-base">Smart expense tracking with AI categories — just describe & add.</p>
+        </div>
+
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 p-5 md:p-6 transition-all hover:shadow-2xl">
+            <form id="expenseForm" class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="flex-1 w-full">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
+                        <i class="fas fa-receipt text-blue-500 text-xs"></i> 
+                        Description
+                    </label>
+                    <input type="text" id="description" placeholder="e.g., Starbucks latte, Uber ride, Netflix" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/80 focus:bg-white transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-800 placeholder:text-gray-400">
                 </div>
-                <div class="w-32">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                <div class="w-full md:w-36">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
+                        <i class="fas fa-indian-rupee-sign text-emerald-500 text-xs"></i>
+                        Amount (₹)
+                    </label>
                     <input type="number" id="amount" placeholder="0.00" step="0.01" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white/80 focus:bg-white transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-800">
                 </div>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
-                    Add
+                <button type="submit" id="submitBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-7 rounded-xl shadow-md shadow-blue-200 transition-all duration-200 flex items-center gap-2 justify-center w-full md:w-auto active:scale-95">
+                    <i class="fas fa-plus-circle"></i> 
+                    <span>Add expense</span>
                 </button>
             </form>
         </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="px-6 py-4 border-gray-100 bg-gray-50">
-                            <h2 class="text-lg font-bold text-gray-700">Recent Transactions</h2>
-                        </div>
-                        <ul id="expenseList" class="divide-y divide-gray-100"></ul>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100/80 overflow-hidden transition-all hover:shadow-2xl">
+                <div class="px-6 py-4 border-b border-gray-100 bg-white/50 flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-list-ul text-blue-500 text-lg"></i>
+                        <h2 class="text-xl font-bold text-gray-800">Recent transactions</h2>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-center items-center">
-                        <h2 class="text-lg font-bold text-gray-500 mb-2">Total spent</h2>
-                        <div class="text-5xl font-black text-red-500" id="totalAmount">₹0.00</div>
+                    <span class="text-xs bg-gray-100/80 px-3 py-1 rounded-full text-gray-600 backdrop-blur-sm" id="transactionCount">0 items</span>
+                </div>
+                <div class="max-h-[420px] overflow-y-auto">
+                    <ul id="expenseList" class="divide-y divide-gray-100"></ul>
+                    <div id="emptyStatePlaceholder" class="py-16 text-center flex flex-col items-center gap-3 bg-white/40">
+                        <i class="fas fa-wallet text-gray-300 text-5xl"></i>
+                        <p class="text-gray-400 font-medium">No transactions yet</p>
+                        <p class="text-xs text-gray-400">Add your first expense — AI will tag it ✨</p>
                     </div>
                 </div>
+            </div>
 
+            <div class="bg-gradient-to-br from-white to-gray-50/90 rounded-2xl shadow-xl border border-gray-100 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-100/30 rounded-full blur-2xl"></div>
+                <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-blue-100/30 rounded-full blur-2xl"></div>
+                <i class="fas fa-circle-dollar-sign text-4xl text-red-400/80 mb-3"></i>
+                <h2 class="text-sm uppercase tracking-wider font-semibold text-gray-500">Total spent</h2>
+                <div class="text-5xl md:text-6xl font-black text-red-500 mt-2 transition-all duration-200" id="totalAmount">₹0.00</div>
+                <div class="mt-4 text-xs text-gray-400 flex items-center gap-1">
+                    <i class="fas fa-microchip text-blue-400 text-[10px]"></i>
+                    <span>AI auto-categorizes every entry</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-xs text-gray-400 pt-4 flex justify-center gap-5">
+            <span><i class="far fa-credit-card"></i> Smart insights</span>
+            <span><i class="fas fa-tag"></i> Dynamic categories</span>
+            <span><i class="fas fa-chart-line"></i> Real-time totals</span>
+        </div>
     </div>
+
+    <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-auto max-w-sm pointer-events-none"></div>
 
     <script>
         const expenseForm = document.getElementById('expenseForm');
         const expenseList = document.getElementById('expenseList');
         const totalAmountEl = document.getElementById('totalAmount');
+        const transactionCountSpan = document.getElementById('transactionCount');
+        const emptyStateDiv = document.getElementById('emptyStatePlaceholder');
+        const submitBtn = document.getElementById('submitBtn');
         let total = 0;
+        let transactionItems = 0;
 
-        expenseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function getCategoryStyle(category) {
+            const cat = (category || 'Other').toLowerCase();
+            const mapping = {
+                'food': { bg: 'bg-emerald-100', text: 'text-emerald-800', icon: 'fa-utensils', border: 'border-emerald-200' },
+                'coffee': { bg: 'bg-amber-100', text: 'text-amber-800', icon: 'fa-mug-hot', border: 'border-amber-200' },
+                'dining': { bg: 'bg-orange-100', text: 'text-orange-800', icon: 'fa-utensil-spoon', border: 'border-orange-200' },
+                'transport': { bg: 'bg-purple-100', text: 'text-purple-800', icon: 'fa-car', border: 'border-purple-200' },
+                'shopping': { bg: 'bg-pink-100', text: 'text-pink-800', icon: 'fa-bag-shopping', border: 'border-pink-200' },
+                'entertainment': { bg: 'bg-indigo-100', text: 'text-indigo-800', icon: 'fa-film', border: 'border-indigo-200' },
+                'bills': { bg: 'bg-red-100', text: 'text-red-800', icon: 'fa-file-invoice-dollar', border: 'border-red-200' },
+                'healthcare': { bg: 'bg-teal-100', text: 'text-teal-800', icon: 'fa-heartbeat', border: 'border-teal-200' },
+                'groceries': { bg: 'bg-lime-100', text: 'text-lime-800', icon: 'fa-apple-alt', border: 'border-lime-200' },
+                'subscription': { bg: 'bg-sky-100', text: 'text-sky-800', icon: 'fa-repeat', border: 'border-sky-200' },
+                'travel': { bg: 'bg-cyan-100', text: 'text-cyan-800', icon: 'fa-plane', border: 'border-cyan-200' },
+            };
+            let match = mapping[cat];
+            if (!match) {
+                if (cat.includes('food') || cat.includes('meal')) match = mapping['food'];
+                else if (cat.includes('coffee')) match = mapping['coffee'];
+                else if (cat.includes('transport') || cat.includes('uber') || cat.includes('taxi') || cat.includes('fuel')) match = mapping['transport'];
+                else if (cat.includes('shop') || cat.includes('amazon') || cat.includes('mall')) match = mapping['shopping'];
+                else if (cat.includes('movie') || cat.includes('netflix') || cat.includes('spotify')) match = mapping['entertainment'];
+                else if (cat.includes('bill') || cat.includes('electricity') || cat.includes('water')) match = mapping['bills'];
+                else match = { bg: 'bg-gray-100', text: 'text-gray-700', icon: 'fa-tag', border: 'border-gray-200' };
+            }
+            return match;
+        }
 
-            const description = document.getElementById('description').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-
-            const response = await fetch('/api/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ description, amount })
-            });
-
-            const newExpense = await response.json();
-
-            addExpenseToDOM(newExpense);
-            updateTotal(newExpense.amount);
-
-            expenseForm.reset();
-            document.getElementById('description').focus();
-        });
-
-        function addExpenseToDOM(expense) {
-            const li = document.createElement('li');
-            li.className = "px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors";
-
-            li.innerHTML = `
-                <div>
-                    <p class="font-semibold text-gray-800">${expense.description}</p>
-                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
-                        AI: ${expense.category}
-                    </span>
-                </div>
-                <div class="font-bold text-gray-700">
-                    ₹${expense.amount.toFixed(2)}
-                </div>
-            `;
-
-            expenseList.prepend(li);
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'error' ? 'bg-red-500' : 'bg-emerald-500';
+            const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
+            toast.className = `${bgColor} text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 mb-2 text-sm font-medium backdrop-blur-sm transition-all duration-200 transform translate-y-0 opacity-100`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 250);
+            }, 3200);
         }
 
         function updateTotal(amount) {
             total += parseFloat(amount);
             totalAmountEl.textContent = `₹${total.toFixed(2)}`;
+            totalAmountEl.classList.add('animate-pulse');
+            setTimeout(() => totalAmountEl.classList.remove('animate-pulse'), 400);
         }
-</script>
 
+        function updateMetaCounter() {
+            transactionCountSpan.textContent = `${transactionItems} ${transactionItems === 1 ? 'item' : 'items'}`;
+            if (transactionItems === 0) {
+                emptyStateDiv.classList.remove('hidden');
+            } else {
+                emptyStateDiv.classList.add('hidden');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function addExpenseToDOM(expense) {
+            const li = document.createElement('li');
+            li.className = "px-5 py-4 flex justify-between items-center hover:bg-gray-50/70 transition-all duration-200 group";
+            
+            const categoryRaw = expense.category || 'Other';
+            const style = getCategoryStyle(categoryRaw);
+            const formattedCategory = categoryRaw.charAt(0).toUpperCase() + categoryRaw.slice(1);
+            
+            li.innerHTML = `
+                <div class="flex flex-col gap-1.5 w-full md:w-auto">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-gray-800 text-base">${escapeHtml(expense.description)}</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${style.bg} ${style.text} shadow-sm border ${style.border}">
+                            <i class="fas ${style.icon} text-[10px]"></i>
+                            AI: ${formattedCategory}
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-400 flex items-center gap-1">
+                        <i class="far fa-clock"></i> just now
+                    </div>
+                </div>
+                <div class="font-bold text-gray-800 text-lg tracking-tight">
+                    ₹${parseFloat(expense.amount).toFixed(2)}
+                </div>
+            `;
+            
+            expenseList.prepend(li);
+            transactionItems++;
+            updateMetaCounter();
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Adding...`;
+                submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fas fa-plus-circle"></i> <span>Add expense</span>`;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+
+        expenseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const descriptionInput = document.getElementById('description');
+            const amountInput = document.getElementById('amount');
+            
+            const description = descriptionInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            
+            if (!description) {
+                showToast('Please enter a description', 'error');
+                descriptionInput.focus();
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                showToast('Please enter a valid amount (>0)', 'error');
+                amountInput.focus();
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/api/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description, amount })
+                });
+                
+                if (!response.ok) {
+                    let errorMsg = `Server error (${response.status})`;
+                    try {
+                        const errData = await response.json();
+                        errorMsg = errData.message || errorMsg;
+                    } catch(_) {}
+                    throw new Error(errorMsg);
+                }
+                
+                const newExpense = await response.json();
+                if (!newExpense.category) newExpense.category = 'Other';
+                addExpenseToDOM(newExpense);
+                updateTotal(newExpense.amount);
+                showToast(`${newExpense.description} added → ${newExpense.category}`, 'success');
+                
+                expenseForm.reset();
+                descriptionInput.focus();
+                
+            } catch (error) {
+                console.error('Add expense error:', error);
+                showToast(error.message || 'Failed to add expense. Check connection or backend.', 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        function initEmptyState() {
+            transactionItems = 0;
+            total = 0;
+            totalAmountEl.textContent = '₹0.00';
+            expenseList.innerHTML = '';
+            updateMetaCounter();
+            emptyStateDiv.classList.remove('hidden');
+        }
+        
+        initEmptyState();
+        window.addEventListener('load', () => {
+            document.getElementById('description').focus();
+        });
+    </script>
 </body>
 </html>
